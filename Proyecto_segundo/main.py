@@ -1,6 +1,5 @@
 from joc import iniciar_partida
-from inventari import Inventari
-from objecte import donuts, eina, llanterna, targeta_company, targeta_identificadora, vestit_espacial
+from objecte import donuts, eina, vestit_espacial, targeta_identificadora
 from zona import Zona
 
 def inicialitzar_mon():
@@ -41,8 +40,7 @@ def main():
         print()
         print("1. Jugar")
         print("2. Crédits")
-        print("3. Crear personatge")
-        print("4. Sortir")
+        print("3. Sortir")
         print()
 
         opcio = input("Selecciona una opció: ").strip()
@@ -52,11 +50,9 @@ def main():
                 zona_inicial = inicialitzar_mon()
                 iniciar_partida(zona_inicial)
             case "2":
-                print("\nCRÉDITOS")
-                print("Juego creado por Izan i Xinhao\n")
+                print("\nCRÉDITS")
+                print("Joc creat per Izan i Xinhao\n")
             case "3":
-                print("\nCrear Personatge (En desenvolupament...)\n")
-            case "4":
                 print("\n¡Adéu fins aviat!")
                 break
             case _:
