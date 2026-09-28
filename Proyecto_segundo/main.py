@@ -44,6 +44,10 @@ def inicialitzar_mon():
     sala_sortida_exterior.afegir_sortida(cuina); sala_sortida_exterior.afegir_sortida(menjador); sala_sortida_exterior.afegir_sortida(propulsors)
     propulsors.afegir_sortida(sala_sortida_exterior)
 
+    ihall = PersonatgeNPC("iHall", "L'ordinador de la nau.", comandament,
+                          ["Bon dia, capità.", "La llanterna és al menjador.", "No ho sé, capità."])
+    comandament.personatges.append(ihall)
+
     return dormitori
 
 def main():
