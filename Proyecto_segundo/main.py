@@ -1,5 +1,6 @@
 from joc import iniciar_partida
 from objecte import donuts, eina, vestit_espacial, targeta_identificadora, llanterna
+from personatge import Jugador, Personatge, PersonatgeNPC
 from zona import Zona
 import random
 
@@ -31,7 +32,7 @@ def inicialitzar_mon():
     zona_aleatoria = random.choice(llista_zones)
 
     zona_aleatoria.afegir_objecte(llanterna)
-
+ 
 # Sortides
     comandament.afegir_sortida(oficines); comandament.afegir_sortida(menjador)
     oficines.afegir_sortida(tallers); oficines.afegir_sortida(vestuari); oficines.afegir_sortida(banys); oficines.afegir_sortida(comandament)
@@ -44,8 +45,7 @@ def inicialitzar_mon():
     sala_sortida_exterior.afegir_sortida(cuina); sala_sortida_exterior.afegir_sortida(menjador); sala_sortida_exterior.afegir_sortida(propulsors)
     propulsors.afegir_sortida(sala_sortida_exterior)
 
-    ihall = PersonatgeNPC("iHall", "L'ordinador de la nau.", comandament,
-                          ["Bon dia, capità.", "La llanterna és al menjador.", "No ho sé, capità."])
+    ihall = PersonatgeNPC("iHall", "L'ordinador de la nau.", comandament, ["Bon dia, capità.", "La llanterna és al menjador.", "No ho sé, capità."])
     comandament.personatges.append(ihall)
 
     return dormitori
