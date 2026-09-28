@@ -1,7 +1,9 @@
 from joc import iniciar_partida
-from objecte import donuts, eina, vestit_espacial, targeta_identificadora
+from objecte import donuts, eina, vestit_espacial, targeta_identificadora, llanterna
 from zona import Zona
+import random
 
+# Zones 
 def inicialitzar_mon():
     tallers = Zona(1, "Tallers", "Zona dels tallers de la nau. Està a les fosques...")
     oficines = Zona(2, "Oficines", "Oficines centrals de la nau. Hi ha escriptoris amb calaixos.")
@@ -14,11 +16,23 @@ def inicialitzar_mon():
     sala_sortida_exterior = Zona(9, "Sala Sortida exterior", "La sala de sortida a l'exterior. Accés directe als propulsors.")
     propulsors = Zona(10, "Propulsors", "La zona dels propulsors de la nau. Exterior amb perill d'asfíxia si no vas equipat.")
 
+# Objectes en zones específiques
     vestuari.afegir_objecte(vestit_espacial)
     tallers.afegir_objecte(eina)
     cuina.afegir_objecte(donuts)
     oficines.afegir_objecte(targeta_identificadora)
+    
+    llista_zones = [
+        tallers, oficines, banys, vestuari, 
+        comandament, dormitori, cuina, 
+        menjador, sala_sortida_exterior
+    ]
 
+    zona_aleatoria = random.choice(llista_zones)
+
+    zona_aleatoria.afegir_objecte(llanterna)
+
+# Sortides
     comandament.afegir_sortida(oficines); comandament.afegir_sortida(menjador)
     oficines.afegir_sortida(tallers); oficines.afegir_sortida(vestuari); oficines.afegir_sortida(banys); oficines.afegir_sortida(comandament)
     tallers.afegir_sortida(oficines); tallers.afegir_sortida(vestuari); tallers.afegir_sortida(banys)

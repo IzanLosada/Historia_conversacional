@@ -27,21 +27,55 @@ def iniciar_partida(zona_inicial):
             for obj in zona_actual.objectes:
                 print(f" - {obj.nom}: {obj.descripcio}")
 
-        text_usuari = input("\nOn vols anar? (o escriu 'sortir' per tornar al menú) > ").lower()
+        print("\nInventari:", end=" ")
+        if inventari_jugador.objectes:
+            noms_inventari = [obj.nom for obj in inventari_jugador.objectes]
+            print(", ".join(noms_inventari))
+        else:
+            print("Buit")
+
+        text_usuari = input("\n> ").strip().lower()
         
         if text_usuari in ["sortir", "exit", "tornar"]:
             print("\nTornant al menú principal...")
             jugant = False
             continue
 
-        zona_desti_trobada = None
-        for sortida in zona_actual.sortides:
-            if sortida.nom.lower() == text_usuari:
-                zona_desti_trobada = sortida
-                break
-        
-        if zona_desti_trobada:
-            zona_actual = zona_desti_trobada
-            print(f"\nT'has mogut correctament a: {zona_actual.nom}")
-        else:
-            print("\nNo pots anar a aquesta zona directament des d'aquí o el nom no és correcte.")
+        paraules = text_usuari.split()
+
+        if len(paraules) > 2:
+            print("\nMàxim de dues paraules permeses.")
+            continue
+
+        if len(paraules) == 1:
+            desti_trobat = None
+            for sortida in zona_actual.sortides:
+                if sortida.nom.lower() == paraules[0]:
+                    desti_trobat = sortida
+                    break
+            
+            if desti_trobat:
+                zona_actual = desti_trobat
+                print(f"\nT'has mogut a: {zona_actual.nom}")
+            else:
+                print("\nAcció o zona no reconeguda.")
+
+        elif len(paraules) == 2:
+            accio = paraules[0]
+            objectiu = paraules[1]
+
+            if accio == "agafar":
+                obj_trobat = None
+                for obj in zona_actual.objectes:
+                    if objectiu in obj.nom.lower():
+                        obj_trobat = obj
+                        break
+                
+                if obj_trobat:
+                    zona_actual.eliminar_objecte(obj_trobat)
+                    inventari_jugador.afegir_objecte(obj_trobat)
+                    print(f"\nHas agafat: {obj_trobat.nom}")
+                else:
+                    print(f"\nNo hi ha cap objecte anomenat '{objectiu}' aquí.")
+            else:
+                print(f"\nAcció '{accio}' no reconeguda.")

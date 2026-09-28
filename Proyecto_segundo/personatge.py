@@ -1,3 +1,5 @@
+from inventari import Inventari
+
 class Jugador:
     def __init__(self, nom, zona_actual):
         self.nom = nom
