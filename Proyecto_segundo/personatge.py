@@ -79,3 +79,23 @@ class PersonatgeNPC(Personatge):
 
     def bloquejar_sortida(self, zona):
         self.sortida_bloquejada = zona
+
+class IHall(PersonatgeNPC):
+    def __init__(self, zona_actual, zona_llanterna):
+        super().__init__("iHall", "L'ordinador de la nau.", zona_actual, [])
+        self.zona_llanterna = zona_llanterna  # dónde está realmente
+
+    def dir_ubicacio_llanterna(self, zones):
+        if random.random() < 0.5:
+            print(f"iHall: La llanterna és a {self.zona_llanterna.nom}.")
+        else:
+            zona_falsa = random.choice(zones)
+            print(f"iHall: La llanterna és a {zona_falsa.nom}.")  # pot ser mentida
+
+    def obrir_porta(self, te_targeta_propia):
+        if te_targeta_propia:
+            print("iHall: Et dono pas, capità.")
+            return True
+        else:
+            print("iHall: Aquesta no és la teva targeta... però t'obro igualment.")
+            return True
