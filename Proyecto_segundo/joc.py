@@ -79,7 +79,10 @@ def iniciar_partida(zona_inicial, llista_zones_instancia, malien_instancia):
             continue
 
         accio = paraules[0]
-        objectiu = " ".join(paraules[1:]) if len(paraules) > 1 else ""
+        if len(paraules) > 1:
+            objectiu = " ".join(paraules[1:])
+        else:
+            objectiu = ""
 
         if accio == "anar":
             if not objectiu:
@@ -92,8 +95,8 @@ def iniciar_partida(zona_inicial, llista_zones_instancia, malien_instancia):
                     desti_trobat = sortida
                     break
             
-            if desti_trobat:
-                te_targeta = any("targeta_identificadora" in obj.nom.lower() for obj in inventari_jugador.objectes)
+            if desti_trobat: # Buscamos targeta en inventario del jugador
+                te_targeta = any("targeta identificadora" in obj.nom.lower() for obj in inventari_jugador.objectes)
                 zones_restringides = ["comandament", "sala sortida exterior"]
 
                 if desti_trobat.nom.lower() in zones_restringides and not te_targeta:
