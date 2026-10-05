@@ -1,9 +1,8 @@
+import random
 from joc import iniciar_partida
-from objecte import donuts, eina, vestit_espacial, targeta_identificadora, llanterna
-from personatge import Jugador, Personatge, PersonatgeNPC
+from objecte import donuts, eina, vestit_espacial, targeta_identificadora, llanterna, Objecte
 from zona import Zona
 from malien import Malien
-import random
 
 def inicialitzar_mon():
     tallers = Zona(1, "Tallers", "Zona dels tallers de la nau. Està a les fosques...")
@@ -17,10 +16,14 @@ def inicialitzar_mon():
     sala_sortida_exterior = Zona(9, "Sala Sortida exterior", "La sala de sortida a l'exterior. Accés directe als propulsors.")
     propulsors = Zona(10, "Propulsors", "La zona dels propulsors de la nau. Exterior amb perill d'asfíxia si no vas equipat.")
 
+    escriptori = Objecte("escriptori", "Un escriptori de fusta amb calaixos tancats.", False)
+    escriptori.contingut = [targeta_identificadora]
+    escriptori.revisat = False
+
     vestuari.afegir_objecte(vestit_espacial)
     tallers.afegir_objecte(eina)
     cuina.afegir_objecte(donuts)
-    oficines.afegir_objecte(targeta_identificadora)
+    oficines.afegir_objecte(escriptori)
     
     llista_zones = [
         tallers, oficines, banys, vestuari, 
@@ -30,7 +33,7 @@ def inicialitzar_mon():
 
     zona_aleatoria = random.choice(llista_zones)
     zona_aleatoria.afegir_objecte(llanterna)
- 
+
     comandament.afegir_sortida(oficines); comandament.afegir_sortida(menjador)
     oficines.afegir_sortida(tallers); oficines.afegir_sortida(vestuari); oficines.afegir_sortida(banys); oficines.afegir_sortida(comandament)
     tallers.afegir_sortida(oficines); tallers.afegir_sortida(vestuari); tallers.afegir_sortida(banys)
@@ -42,7 +45,6 @@ def inicialitzar_mon():
     sala_sortida_exterior.afegir_sortida(cuina); sala_sortida_exterior.afegir_sortida(menjador); sala_sortida_exterior.afegir_sortida(propulsors)
     propulsors.afegir_sortida(sala_sortida_exterior)
 
-    # Inicialitzem en Malien en una zona aleatòria de la nau
     malien = Malien(random.choice(llista_zones))
 
     return dormitori, llista_zones, malien
