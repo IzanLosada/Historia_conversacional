@@ -1,6 +1,7 @@
 from inventari import Inventari
+from ihall import IHall
 
-def iniciar_partida(zona_inicial):
+def iniciar_partida(zona_inicial, llista_zones_instancia, malien_instancia):
     print("\n==================================================")
     print("      INICIALITZANT SISTEMA DE LA NAU...          ")
     print("==================================================")
@@ -10,9 +11,36 @@ def iniciar_partida(zona_inicial):
     zona_actual = zona_inicial
     inventari_jugador = Inventari()
     jugant = True
-    llanterna_encesa = False  # Estat inicial de la llanterna
+    llanterna_encesa = False
+    ihall = IHall()
+
+    totes_habitacions = [z.nom for z in llista_zones_instancia]
+    
+    llanterna_usada_tallers = False
+    zona_anterior = zona_actual
 
     while jugant:
+        if zona_anterior.nom.lower() == "tallers" and zona_actual.nom.lower() != "tallers" and llanterna_usada_tallers:
+            print("\n[Avís del sistema]: S'ha trencat la llanterna o s'ha fos en sortir dels tallers a causa de l'ús intensiu!")
+            llanterna_usada_tallers = False
+
+        zona_anterior = zona_actual
+
+        ubicacio_actual_llanterna = "en possessió del jugador o desconeguda"
+        for zona in llista_zones_instancia:
+            for obj in zona.objectes:
+                if "llanterna" in obj.nom.lower():
+                    ubicacio_actual_llanterna = zona.nom
+                    break
+
+        context_joc = {
+            "ubicacio_llanterna": ubicacio_actual_llanterna,
+            "totes_habitacions": totes_habitacions,
+            "ubicacio_malien": malien_instancia.zona_actual.nom
+        }
+
+        ihall.interaccio_torn(context_joc)
+
         print(f"\n[ Zona actual: {zona_actual.nom} ]")
         zona_actual.mostrar_descripcio()
         
@@ -46,7 +74,6 @@ def iniciar_partida(zona_inicial):
         if not paraules:
             continue
 
-        # Si només s'escriu una paraula, comprovem si és per moure's
         if len(paraules) == 1:
             desti_trobat = None
             for sortida in zona_actual.sortides:
@@ -57,30 +84,23 @@ def iniciar_partida(zona_inicial):
             if desti_trobat:
                 zona_actual = desti_trobat
                 print(f"\nT'has mogut a: {zona_actual.nom}")
+                malien_instancia.moure_aleatoriament()
+                if not malien_instancia.verificar_trobada(type('ObjJugador', (), {'zona_actual': zona_actual, 'inventari': inventari_jugador})()):
+                    jugant = False
             else:
                 print("\nAcció o zona no reconeguda.")
 
         else:
-            # Si té 2 o més paraules: la primera és l'acció, la resta l'objectiu
             accio = paraules[0]
             objectiu = " ".join(paraules[1:])
 
-            # --- ACCIÓ: AGAFAR ---
             if accio == "agafar":
-                # Comprovació de zona fosca (Tallers)
                 if zona_actual.nom.lower() == "tallers" and "eina" in objectiu:
-                    te_llanterna = False
-                    for obj in inventari_jugador.objectes:
-                        if "llanterna" in obj.nom.lower():
-                            te_llanterna = True
-                            break
-                    
-                    # Si no la té o la té però no està encesa
-                    if not te_llanterna or not llanterna_encesa:
+                    te_llanterna_inv = any("llanterna" in obj.nom.lower() for obj in inventari_jugador.objectes)
+                    if not te_llanterna_inv or not llanterna_encesa:
                         print("\nEstà massa fosc per agafar l'eina.")
                         continue
 
-                # Buscar l'objecte a la zona actual
                 obj_trobat = None
                 for obj in zona_actual.objectes:
                     if objectiu in obj.nom.lower():
@@ -94,7 +114,6 @@ def iniciar_partida(zona_inicial):
                 else:
                     print(f"\nNo hi ha cap objecte anomenat '{objectiu}' aquí.")
 
-            # --- ACCIÓ: DEIXAR ---
             elif accio == "deixar":
                 obj_trobat = None
                 for obj in inventari_jugador.objectes:
@@ -109,25 +128,30 @@ def iniciar_partida(zona_inicial):
                 else:
                     print(f"\nNo tens cap objecte anomenat '{objectiu}' al teu inventari.")
 
-            # --- ACCIÓ: USAR / ENCENDRE ---
-            elif accio in ["usar", "encendre"]:
-                te_objecte = False
+            elif accio in ["utilitzar", "encendre"]:
+                obj_trobat = None
                 for obj in inventari_jugador.objectes:
                     if objectiu in obj.nom.lower():
-                        te_objecte = True
+                        obj_trobat = obj
                         break
                 
-                if not te_objecte:
+                if not obj_trobat:
                     print(f"\nNo tens l'objecte '{objectiu}' al teu inventari.")
                     continue
 
-                if "llanterna" in objectiu:
+                if "llanterna" in objectiu.lower():
                     llanterna_encesa = True
-                    print("\nHas encès la llanterna. Ara pots veure-hi clarament.")
-                elif "eina" in objectiu and zona_actual.nom.lower() == "propulsors":
+                    print("\nHas utilitzat la llanterna. Ara pots veure-hi clarament.")
+                    if zona_actual.nom.lower() == "tallers":
+                        llanterna_usada_tallers = True
+                    
+                    inventari_jugador.eliminar_objecte(obj_trobat)
+                    print("La llanterna s'ha trencat (només tenia un ús) i l'has perdut de l'inventari.")
+
+                elif "eina" in objectiu.lower() and zona_actual.nom.lower() == "propulsors":
                     print("\nHas utilitzat l'eina als propulsors. Motor reparat correctament!")
                 else:
-                    print(f"\nNo pots usar '{objectiu}' aquí.")
+                    print(f"\nNo pots utilitzar '{objectiu}' aquí.")
             
             else:
                 print(f"\nAcció '{accio}' no reconeguda.")

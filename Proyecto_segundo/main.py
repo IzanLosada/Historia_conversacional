@@ -2,9 +2,9 @@ from joc import iniciar_partida
 from objecte import donuts, eina, vestit_espacial, targeta_identificadora, llanterna
 from personatge import Jugador, Personatge, PersonatgeNPC
 from zona import Zona
+from malien import Malien
 import random
 
-# Zones 
 def inicialitzar_mon():
     tallers = Zona(1, "Tallers", "Zona dels tallers de la nau. Està a les fosques...")
     oficines = Zona(2, "Oficines", "Oficines centrals de la nau. Hi ha escriptoris amb calaixos.")
@@ -17,7 +17,6 @@ def inicialitzar_mon():
     sala_sortida_exterior = Zona(9, "Sala Sortida exterior", "La sala de sortida a l'exterior. Accés directe als propulsors.")
     propulsors = Zona(10, "Propulsors", "La zona dels propulsors de la nau. Exterior amb perill d'asfíxia si no vas equipat.")
 
-# Objectes en zones específiques
     vestuari.afegir_objecte(vestit_espacial)
     tallers.afegir_objecte(eina)
     cuina.afegir_objecte(donuts)
@@ -26,14 +25,12 @@ def inicialitzar_mon():
     llista_zones = [
         tallers, oficines, banys, vestuari, 
         comandament, dormitori, cuina, 
-        menjador, sala_sortida_exterior
+        menjador, sala_sortida_exterior, propulsors
     ]
 
     zona_aleatoria = random.choice(llista_zones)
-
     zona_aleatoria.afegir_objecte(llanterna)
  
-# Sortides
     comandament.afegir_sortida(oficines); comandament.afegir_sortida(menjador)
     oficines.afegir_sortida(tallers); oficines.afegir_sortida(vestuari); oficines.afegir_sortida(banys); oficines.afegir_sortida(comandament)
     tallers.afegir_sortida(oficines); tallers.afegir_sortida(vestuari); tallers.afegir_sortida(banys)
@@ -45,10 +42,10 @@ def inicialitzar_mon():
     sala_sortida_exterior.afegir_sortida(cuina); sala_sortida_exterior.afegir_sortida(menjador); sala_sortida_exterior.afegir_sortida(propulsors)
     propulsors.afegir_sortida(sala_sortida_exterior)
 
-    ihall = PersonatgeNPC("iHall", "L'ordinador de la nau.", comandament, ["Bon dia, capità.", "La llanterna és al menjador.", "No ho sé, capità."])
-    comandament.personatges.append(ihall)
+    # Inicialitzem en Malien en una zona aleatòria de la nau
+    malien = Malien(random.choice(llista_zones))
 
-    return dormitori
+    return dormitori, llista_zones, malien
 
 def main():
     while True:
@@ -57,7 +54,7 @@ def main():
         print("================================================")
         print()
         print("1. Jugar")
-        print("2. Crédits")
+        print("2. Crèdits")
         print("3. Sortir")
         print()
 
@@ -65,10 +62,10 @@ def main():
 
         match opcio:
             case "1":
-                zona_inicial = inicialitzar_mon()
-                iniciar_partida(zona_inicial)
+                zona_inicial, llista_zones, malien = inicialitzar_mon()
+                iniciar_partida(zona_inicial, llista_zones, malien)
             case "2":
-                print("\nCRÉDITS")
+                print("\nCRÈDITS")
                 print("Joc creat per Izan i Xinhao\n")
             case "3":
                 print("\n¡Adéu fins aviat!")
