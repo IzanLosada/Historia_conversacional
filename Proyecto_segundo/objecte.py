@@ -1,9 +1,12 @@
 class Objecte:
 
-    def __init__(self, id, nom, descripcio):
+    def __init__(self, id, nom, descripcio, portable=True, contingut=None):
         self.id = id
         self.nom = nom
         self.descripcio = descripcio
+        self.portable = portable
+        self.contingut = contingut or []
+        self.revisat = False
 
 llanterna = Objecte(1, "Llanterna", "Una llanterna que permet il·luminar la nau.")
 eina = Objecte(2, "Eina", "Una eina especial per reparar els propulsors.")

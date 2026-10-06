@@ -8,7 +8,7 @@ def inicialitzar_mon():
     tallers = Zona(1, "Tallers", "Zona dels tallers de la nau. Està a les fosques...")
     oficines = Zona(2, "Oficines", "Oficines centrals de la nau. Hi ha escriptoris amb calaixos.")
     banys = Zona(3, "Banys", "Els banys de la nau. Tot aigualit i net.")
-    vestuari = Zona(4, "Vestuari", "El vestuari de la nau. Aquí s'guarda l'equipament espacial.")
+    vestuari = Zona(4, "Vestuari", "El vestuari de la nau. Aquí es guarda l'equipament espacial.")
     comandament = Zona(5, "Comandament", "La sala de comandament de la nau. On es troba l'ordinador iHall.")
     dormitori = Zona(6, "Dormitori", "El dormitori de la nau on el capità Bond s'ha despertat de l'hivernació.")
     cuina = Zona(7, "Cuina", "La cuina de la nau. Olors de menjar sintètic i... dònuts!")
@@ -16,23 +16,21 @@ def inicialitzar_mon():
     sala_sortida_exterior = Zona(9, "Sala Sortida exterior", "La sala de sortida a l'exterior. Accés directe als propulsors.")
     propulsors = Zona(10, "Propulsors", "La zona dels propulsors de la nau. Exterior amb perill d'asfíxia si no vas equipat.")
 
-    escriptori = Objecte("escriptori", "Un escriptori de fusta amb calaixos tancats.", False)
-    escriptori.contingut = [targeta_identificadora]
-    escriptori.revisat = False
+    escriptori = Objecte(0, "Escriptori", "Un escriptori de fusta amb calaixos tancats.",
+                         portable=False, contingut=[targeta_identificadora])
 
     vestuari.afegir_objecte(vestit_espacial)
     tallers.afegir_objecte(eina)
     cuina.afegir_objecte(donuts)
     oficines.afegir_objecte(escriptori)
-    
+
     llista_zones = [
-        tallers, oficines, banys, vestuari, 
-        comandament, dormitori, cuina, 
+        tallers, oficines, banys, vestuari,
+        comandament, dormitori, cuina,
         menjador, sala_sortida_exterior, propulsors
     ]
 
-    zona_aleatoria = random.choice(llista_zones)
-    zona_aleatoria.afegir_objecte(llanterna)
+    random.choice(llista_zones).afegir_objecte(llanterna)
 
     comandament.afegir_sortida(oficines); comandament.afegir_sortida(menjador)
     oficines.afegir_sortida(tallers); oficines.afegir_sortida(vestuari); oficines.afegir_sortida(banys); oficines.afegir_sortida(comandament)
