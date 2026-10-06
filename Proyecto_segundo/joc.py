@@ -41,11 +41,7 @@ def iniciar_partida(zona_inicial, llista_zones_instancia, malien_instancia):
                     ubicacio_actual_llanterna = zona.nom
                     break
 
-        context_joc = {
-            "ubicacio_llanterna": ubicacio_actual_llanterna,
-            "totes_habitacions": totes_habitacions,
-            "ubicacio_malien": malien_instancia.zona_actual.nom
-        }
+        context_joc = {"ubicacio_llanterna": ubicacio_actual_llanterna, "totes_habitacions": totes_habitacions, "ubicacio_malien": malien_instancia.zona_actual.nom}
 
         ihall.interaccio_torn(context_joc)
 
